@@ -14,7 +14,7 @@ import { emails, getEmailsForFolder, mailFolders, type MailFolder } from "@/comp
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Stealth - Stellar Mail Protocol" },
+      { title: "Stealth" },
       { name: "description", content: "Stealth is a cryptographic mail client built on Stellar." },
       { property: "og:title", content: "Stealth" },
       { property: "og:description", content: "Cryptographic mail identities, postage, and delivery proofs on Stellar." },
