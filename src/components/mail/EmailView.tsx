@@ -65,7 +65,7 @@ export function EmailView({ email, actions = {} }: { email: Email | null; action
         ) : (
           <motion.div
             key={email.id}
-            initial={{ opacity: 0, y: 8, filter: "blur(8px)" }}
+            initial={false}
             animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
             exit={{ opacity: 0, y: -8, filter: "blur(8px)" }}
             transition={{ duration: 0.35, ease: [0.2, 0.8, 0.2, 1] }}

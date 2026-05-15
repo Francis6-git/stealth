@@ -194,7 +194,7 @@ function MailApp() {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 12, scale: 0.97 }}
             transition={{ type: "spring", stiffness: 300, damping: 28 }}
-            className="glass-strong fixed bottom-6 left-6 z-30 flex items-center gap-3 rounded-xl px-4 py-3 text-xs"
+            className="glass-strong fixed bottom-6 left-1/2 z-[200] flex -translate-x-1/2 items-center gap-3 rounded-xl px-4 py-3 text-xs shadow-[0_18px_50px_-12px_rgba(0,0,0,0.7)]"
           >
             <span className="pulse-dot h-1.5 w-1.5 rounded-full bg-[oklch(0.85_0.005_270)]" />
             <span className="text-foreground">{toast}</span>
