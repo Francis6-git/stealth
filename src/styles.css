@@ -356,10 +356,17 @@
   }
 
   @keyframes pulse-dot {
-    0%, 100% { box-shadow: 0 0 0 0 oklch(0.85 0.005 270 / 0.5); }
-    50% { box-shadow: 0 0 0 6px oklch(0.85 0.005 270 / 0); }
+    0%,
+    100% {
+      box-shadow: 0 0 0 0 oklch(0.85 0.005 270 / 0.5);
+    }
+    50% {
+      box-shadow: 0 0 0 6px oklch(0.85 0.005 270 / 0);
+    }
   }
-  .pulse-dot { animation: pulse-dot 2s ease-out infinite; }
+  .pulse-dot {
+    animation: pulse-dot 2s ease-out infinite;
+  }
 
   @keyframes float-orb {
     0%, 100% { transform: translate(0,0) scale(1); }
