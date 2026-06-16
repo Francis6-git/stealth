@@ -11,6 +11,7 @@ import type { ComposeSubmission } from "@/components/mail/composeValidation";
 import { RightPanel, type ContextAction } from "@/components/mail/RightPanel";
 import { SettingsModal } from "@/components/mail/SettingsModal";
 import { AttachmentPreviewDrawer } from "@/components/mail/AttachmentPreviewDrawer";
+import { CommandPalette, type CommandId } from "@/features/command-palette";
 import {
   buildBulkActionPatch,
   getBulkActionConfirmation,
@@ -34,7 +35,6 @@ import { usePreferences } from "@/features/preferences";
 import { CalendarWorkspace, useCalendar } from "@/features/calendar";
 import { FeedbackViewport } from "@/features/design-system/feedback/feedback-viewport";
 import { useFeedback } from "@/features/design-system/feedback/use-feedback";
-import { OnboardingModal, draftToMailboxPolicy, type OnboardingDraft } from "@/features/onboarding";
 import { ImportWizard, type ImportedContact } from "@/features/contacts";
 import {
   SenderConversionDialog,
@@ -70,30 +70,7 @@ export const Route = createFileRoute("/")({
 });
 
 function IndexPage() {
-  const [authMode, setAuthMode] = useState<"logged-out" | "demo" | "authenticated">("logged-out");
-  const { state: freighterState, connect } = useFreighter();
-
-  const handleConnectWallet = async () => {
-    const address = await connect();
-    if (address) {
-      setAuthMode("authenticated");
-    } else if (freighterState.status === "error" || freighterState.status === "unavailable") {
-      // Fallback for demo purposes if wallet isn't available
-      // In a real app we might show a toast, but here we can just alert or force auth
-      alert("Wallet connection failed or unavailable. Please use demo mode for now.");
-    }
-  };
-
-  if (authMode === "logged-out") {
-    return (
-      <LandingScreen
-        onConnectWallet={handleConnectWallet}
-        onExploreDemo={() => setAuthMode("demo")}
-      />
-    );
-  }
-
-  return <MailApp isDemoMode={authMode === "demo"} onSignOut={() => setAuthMode("logged-out")} />;
+  return <MailApp isDemoMode />;
 }
 
 function delay(ms: number) {
@@ -101,6 +78,7 @@ function delay(ms: number) {
 }
 
 function MailApp({ isDemoMode, onSignOut }: { isDemoMode?: boolean; onSignOut?: () => void }) {
+function MailApp({ isDemoMode }: { isDemoMode?: boolean }) {
   const [folder, setFolder] = useState<MailFolder>("inbox");
   const [emails, setEmails] = useState<Email[]>(initialEmails);
   const [selectedId, setSelectedId] = useState<string | null>(initialEmails[0].id);
@@ -126,51 +104,17 @@ function MailApp({ isDemoMode, onSignOut }: { isDemoMode?: boolean; onSignOut?: 
   const [calendarOpen, setCalendarOpen] = useState(false);
   const [calendarEventId, setCalendarEventId] = useState<string | null>(null);
   const [calendarCreateRequest, setCalendarCreateRequest] = useState(0);
-  const { preferences, setPreferences, hydrated } = usePreferences();
+  const { preferences, setPreferences } = usePreferences();
   const [settingsSnapshot, setSettingsSnapshot] = useState<typeof preferences | null>(null);
   const senderConversion = useSenderConversion();
+  const snooze = useSnooze();
+  const isMobile = useIsMobile();
   const [previewAttachment, setPreviewAttachment] = useState<{
     name: string;
     size: string;
     type: string;
   } | null>(null);
 
-  // Gate: show onboarding only after localStorage has been read (hydrated) and only
-  // when it has not been completed in a previous session.
-  // In demo mode, we might want to skip onboarding or mock it.
-  const showOnboarding = hydrated && !preferences.onboardingCompleted && !isDemoMode;
-
-  const handleOnboardingComplete = useCallback(
-    async (walletAddress: string, draft: OnboardingDraft) => {
-      const policy = draftToMailboxPolicy(draft);
-
-      const response = await fetch(`/api/v1/policies/${walletAddress}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          "x-stealth-address": walletAddress,
-        },
-        body: JSON.stringify(policy),
-      });
-
-      if (!response.ok) {
-        const body = await response.json().catch(() => ({}));
-        const message =
-          (body as { error?: { message?: string } }).error?.message ??
-          `Policy submission failed (HTTP ${response.status}).`;
-        throw new Error(message);
-      }
-
-      setPreferences((prev) => ({
-        ...prev,
-        unknownSenders: draft.unknownSenderRule,
-        minimumPostage: draft.minimumPostage,
-        receiptOnDelivery: draft.receiptOnDelivery,
-        onboardingCompleted: true,
-      }));
-    },
-    [setPreferences],
-  );
   const calendar = useCalendar();
   const { dismiss: dismissFeedback, items: feedbackItems, notify: showToast } = useFeedback();
 
@@ -416,6 +360,98 @@ function MailApp({ isDemoMode, onSignOut }: { isDemoMode?: boolean; onSignOut?: 
     showToast("Conversation summary refreshed");
   };
 
+  const runCommand = (id: CommandId, email?: Email) => {
+    const target = email ?? selected;
+
+    if (id === "compose") {
+      openCompose();
+      return;
+    }
+
+    if (id === "go-inbox" || id === "go-starred" || id === "go-sent") {
+      const nextFolder = id === "go-inbox" ? "inbox" : id === "go-starred" ? "starred" : "sent";
+      setCustomFolder(null);
+      setFilters(defaultMailFilters);
+      setFolder(nextFolder);
+      return;
+    }
+
+    if (id === "open-settings") {
+      setSettingsSnapshot(preferences);
+      setSettingsOpen(true);
+      return;
+    }
+
+    if (id === "relay-diagnostics") {
+      setFolder("receipts");
+      setCustomFolder(null);
+      showToast("Relay diagnostics opened");
+      return;
+    }
+
+    if (!target) {
+      showToast("Select a message first", { tone: "danger" });
+      return;
+    }
+
+    setSelectedId(target.id);
+
+    switch (id) {
+      case "archive-thread":
+        handleArchive(target);
+        break;
+      case "approve-sender":
+        handleConvertSender(
+          {
+            emailId: target.id,
+            sender: target.from,
+            address: target.email,
+            currentPolicy: target.senderPolicy,
+          },
+          "allow",
+        );
+        break;
+      case "block-sender":
+        handleConvertSender(
+          {
+            emailId: target.id,
+            sender: target.from,
+            address: target.email,
+            currentPolicy: target.senderPolicy,
+          },
+          "block",
+        );
+        break;
+      case "quote-postage":
+        showToast(`Minimum postage for ${target.from}: ${preferences.minimumPostage} XLM`);
+        break;
+      case "inspect-proof": {
+        const proof = deriveProof(target);
+        if (navigator.clipboard?.writeText) {
+          void navigator.clipboard.writeText(proof).catch(() => undefined);
+        }
+        showToast(`Proof hash copied: ${proof}`);
+        break;
+      }
+      case "settle-delivery":
+        updateEmail(target.id, {
+          receiptState: "sent",
+          labels: [...(target.labels ?? []), "Settled"],
+        });
+        showToast(`Delivery settled for "${target.subject}"`, { tone: "success" });
+        break;
+      case "refund-postage":
+        updateEmail(target.id, {
+          folder: "spam",
+          labels: [...(target.labels ?? []), "Refunded"],
+        });
+        showToast(`Postage refunded for "${target.subject}"`, { tone: "success" });
+        break;
+      default:
+        break;
+    }
+  };
+
   const handleComposeSubmit = (submission: ComposeSubmission) => {
     const message: Email = {
       id: `local-${Date.now()}`,
@@ -514,7 +550,6 @@ function MailApp({ isDemoMode, onSignOut }: { isDemoMode?: boolean; onSignOut?: 
             }}
             onImportContacts={() => setImportOpen(true)}
             onShowToast={showToast}
-            onSignOut={onSignOut}
             filters={filters}
             onFiltersChange={setFilters}
             onQuickAction={(action) => {
@@ -671,8 +706,6 @@ function MailApp({ isDemoMode, onSignOut }: { isDemoMode?: boolean; onSignOut?: 
         onClose={() => setImportOpen(false)}
         onSave={handleImportSave}
       />
-
-      <OnboardingModal open={showOnboarding} onComplete={handleOnboardingComplete} />
 
       <SenderConversionDialog
         target={senderConversion.target}
