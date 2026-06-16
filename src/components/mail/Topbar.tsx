@@ -447,7 +447,7 @@ function FilterToggle({
   checked,
   onChange,
 }: {
-  icon: any;
+  icon: LucideIcon;
   label: string;
   checked: boolean;
   onChange: (v: boolean) => void;
@@ -474,7 +474,7 @@ function AccountMenuItem({
   label,
   onClick,
 }: {
-  icon: any;
+  icon: LucideIcon;
   label: string;
   onClick: () => void;
 }) {
