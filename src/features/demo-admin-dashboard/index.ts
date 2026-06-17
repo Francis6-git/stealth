@@ -52,6 +52,16 @@ export {
 } from "./utils/tagOperations";
 
 export {
+  normalizeTagName,
+  toTagSlug,
+  resolveTagSlug,
+  normalizeTagColor,
+  assignTagOrders,
+  normalizeCampaignTag,
+  normalizeCampaignTags,
+} from "./utils/tagNormalization";
+
+export {
   saveCampaignTags,
   loadCampaignTags,
   clearCampaignTags,
