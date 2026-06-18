@@ -55,5 +55,3 @@ export function normalizeTimestamp(timestamp: string): string {
   }
   return timestamp;
 }
-
-

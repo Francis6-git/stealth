@@ -40,23 +40,17 @@ describe("deterministicId", () => {
 describe("deterministicSnapshotId", () => {
   it("returns base ID when no collision", () => {
     const existing = new Set(["snap-welcome", "snap-security"]);
-    expect(deterministicSnapshotId("snap", "Newsletter", existing)).toBe(
-      "snap-newsletter",
-    );
+    expect(deterministicSnapshotId("snap", "Newsletter", existing)).toBe("snap-newsletter");
   });
 
   it("appends -2 on first collision", () => {
     const existing = new Set(["snap-newsletter"]);
-    expect(deterministicSnapshotId("snap", "Newsletter", existing)).toBe(
-      "snap-newsletter-2",
-    );
+    expect(deterministicSnapshotId("snap", "Newsletter", existing)).toBe("snap-newsletter-2");
   });
 
   it("increments suffix on repeated collisions", () => {
     const existing = new Set(["snap-newsletter", "snap-newsletter-2", "snap-newsletter-3"]);
-    expect(deterministicSnapshotId("snap", "Newsletter", existing)).toBe(
-      "snap-newsletter-4",
-    );
+    expect(deterministicSnapshotId("snap", "Newsletter", existing)).toBe("snap-newsletter-4");
   });
 
   it("does not mutate the input set", () => {
@@ -81,13 +75,7 @@ describe("detectCollisions", () => {
   });
 
   it("detects multiple collisions", () => {
-    const items = [
-      { id: "x" },
-      { id: "y" },
-      { id: "x" },
-      { id: "z" },
-      { id: "y" },
-    ];
+    const items = [{ id: "x" }, { id: "y" }, { id: "x" }, { id: "z" }, { id: "y" }];
     const collisions = detectCollisions(items);
     expect(collisions.has("x")).toBe(true);
     expect(collisions.has("y")).toBe(true);
@@ -109,10 +97,7 @@ describe("normalizeLabels", () => {
   });
 
   it("filters out empty strings", () => {
-    expect(normalizeLabels(["valid", "", "  ", "also-valid"])).toEqual([
-      "valid",
-      "also-valid",
-    ]);
+    expect(normalizeLabels(["valid", "", "  ", "also-valid"])).toEqual(["valid", "also-valid"]);
   });
 
   it("handles mixed case and special characters", () => {
