@@ -18,6 +18,7 @@
 ### Core Logic
 
 `assignMeetings()` is a pure function that:
+
 1. Sorts meetings by priority (desc) then effort (asc).
 2. Matches members whose skill set is a superset of `requiredSkills`.
 3. Filters by remaining capacity (`weeklyCapacity − currentLoad ≥ effort`).
@@ -25,18 +26,19 @@
 5. Mutates a local load counter so each subsequent meeting sees updated loads.
 
 Unassigned reasons are machine-readable:
+
 - `"skill_mismatch"` — no member has the required skills.
 - `"capacity"` — skill match found but all eligible members were at capacity.
 
 ### State Coverage
 
-| State | Where handled |
-|-------|---------------|
-| Loading | `createMeetingAssignmentService()` async wrapper with configurable delay |
-| Error (simulated) | `failureRate` option throws `Error("... simulated")` |
-| Error (bad input) | `assignMeetings()` throws `TypeError` for non-array arguments |
-| Empty | `meetings: []` → `{ assignments: [], summary: { total: 0, coveragePercent: 0 } }` |
-| Success | Full `AssignmentResult` with `assignments[]` and `summary` |
+| State             | Where handled                                                                     |
+| ----------------- | --------------------------------------------------------------------------------- |
+| Loading           | `createMeetingAssignmentService()` async wrapper with configurable delay          |
+| Error (simulated) | `failureRate` option throws `Error("... simulated")`                              |
+| Error (bad input) | `assignMeetings()` throws `TypeError` for non-array arguments                     |
+| Empty             | `meetings: []` → `{ assignments: [], summary: { total: 0, coveragePercent: 0 } }` |
+| Success           | Full `AssignmentResult` with `assignments[]` and `summary`                        |
 
 ### Fixtures
 
@@ -46,6 +48,7 @@ Unassigned reasons are machine-readable:
 ### Test Coverage
 
 17 assertions via `node:test` (no external test runner):
+
 - Per-meeting assignment verification (all 7 meetings).
 - Output order preservation.
 - Summary statistics (covered %, member effort delta).

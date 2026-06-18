@@ -1,4 +1,7 @@
-export { assignMeetings, createMeetingAssignmentService } from "./services/meetingAssignmentService";
+export {
+  assignMeetings,
+  createMeetingAssignmentService,
+} from "./services/meetingAssignmentService";
 export type {
   MeetingAssignmentService,
   MeetingAssignmentServiceConfig,

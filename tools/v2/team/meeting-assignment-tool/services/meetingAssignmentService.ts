@@ -64,8 +64,8 @@ export function assignMeetings({
   const assignments: MeetingAssignment[] = sorted.map((meeting) => {
     const required = new Set(meeting.requiredSkills);
 
-    const skillMatches = members.filter((m) =>
-      required.size === 0 || [...required].every((s) => m.skills.has(s)),
+    const skillMatches = members.filter(
+      (m) => required.size === 0 || [...required].every((s) => m.skills.has(s)),
     );
 
     const eligible = skillMatches.filter(

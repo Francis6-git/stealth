@@ -58,29 +58,29 @@ const data = await svc.assign();
 
 **Input — `TeamMember`**
 
-| Field | Type | Description |
-|-------|------|-------------|
-| `id` | `string` | Unique identifier |
-| `name` | `string` | Display name |
-| `skills` | `string[]` | Skill tags |
-| `currentMeetingLoad` | `number` | Meetings already assigned this week |
-| `weeklyCapacity` | `number` | Max meetings per week |
+| Field                | Type       | Description                         |
+| -------------------- | ---------- | ----------------------------------- |
+| `id`                 | `string`   | Unique identifier                   |
+| `name`               | `string`   | Display name                        |
+| `skills`             | `string[]` | Skill tags                          |
+| `currentMeetingLoad` | `number`   | Meetings already assigned this week |
+| `weeklyCapacity`     | `number`   | Max meetings per week               |
 
 **Input — `Meeting`**
 
-| Field | Type | Description |
-|-------|------|-------------|
-| `id` | `string` | Unique identifier |
-| `requiredSkills` | `string[]` | Skills needed (empty = any member) |
-| `effort` | `1 \| 2 \| 3` | Weight consumed from capacity |
-| `priority` | `number` | Higher = processed first |
+| Field            | Type          | Description                        |
+| ---------------- | ------------- | ---------------------------------- |
+| `id`             | `string`      | Unique identifier                  |
+| `requiredSkills` | `string[]`    | Skills needed (empty = any member) |
+| `effort`         | `1 \| 2 \| 3` | Weight consumed from capacity      |
+| `priority`       | `number`      | Higher = processed first           |
 
 **Output — `MeetingAssignment`**
 
-| Field | Type | Description |
-|-------|------|-------------|
-| `assigneeId` | `string \| null` | Assigned member id, or null |
-| `status` | `"assigned" \| "unassigned"` | |
-| `reason` | `"matched" \| "capacity" \| "skill_mismatch"` | Why assigned or not |
+| Field        | Type                                          | Description                 |
+| ------------ | --------------------------------------------- | --------------------------- |
+| `assigneeId` | `string \| null`                              | Assigned member id, or null |
+| `status`     | `"assigned" \| "unassigned"`                  |                             |
+| `reason`     | `"matched" \| "capacity" \| "skill_mismatch"` | Why assigned or not         |
 
 See `types.ts` for full type definitions and `docs/review-notes.md` for contributor notes.
