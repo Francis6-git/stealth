@@ -198,23 +198,44 @@ _If future integration is needed, create a new issue instead of modifying this a
 
 ## Security Assumptions
 
-_(Detailed in Issue #687 - Security and performance hardening)_
+See [docs/THREAT_MODEL.md](./docs/THREAT_MODEL.md) for complete threat model, mitigation strategies, and implementation details.
 
-- Input from team members must be validated
-- Email content must be sanitized before display
-- No sensitive data should be logged
+**Key constraints:**
+
+- Input from team members must be validated (use `inputValidation` service)
+- Email content must be sanitized before display (use `contentSanitization` service)
+- No sensitive data should be logged (passwords, tokens, email bodies)
 - Configuration should not leak to unauthorized users
+- XSS, injection, and path traversal attacks must be prevented
+
+**Implementation guide:**
+
+- See [docs/API.md](./docs/API.md) for validation and sanitization API
+- See [tests/security.example.test.ts](./tests/security.example.test.ts) for test patterns
+- See [tests/fixtures.ts](./tests/fixtures.ts) for attack vectors and test data
 
 ---
 
 ## Performance Assumptions
 
-_(Detailed in Issue #687 - Security and performance hardening)_
+See [docs/PERFORMANCE.md](./docs/PERFORMANCE.md) for complete performance model, optimization strategies, and benchmarks.
+
+**Key constraints:**
 
 - Digests should handle 1000+ emails per team per day
 - Preview generation should complete in < 2 seconds
-- No unnecessary re-renders on large datasets
+- Large dataset processing should stream, not batch load
 - Memory footprint should scale linearly with email count
+- No unnecessary data duplication
+- Timeouts at 30 seconds per digest operation
+
+**Optimization strategies:**
+
+- Stream processing instead of batch loading
+- Early exit when limits reached
+- Efficient data structures (Set, Map, not Array)
+- Caching for repeated operations (sanitization)
+- Proper database indexing on timestamp and sender fields
 
 ---
 
