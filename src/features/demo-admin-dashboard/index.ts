@@ -6,6 +6,12 @@ export {
   getAdminDashboardWidthNote,
   isAdminDashboardWidthSupported,
 } from "./layout";
+export type { PayloadDescriptor, PayloadDescriptorKind } from "./types/payloadDescriptor";
+export {
+  PAYLOAD_DESCRIPTOR_CATALOG,
+  getPayloadDescriptorCatalog,
+  getPayloadDescriptorsByKind,
+} from "./fixtures/payloadDescriptorCatalog";
 
 export {
   adminDashboardLayoutChecks,
