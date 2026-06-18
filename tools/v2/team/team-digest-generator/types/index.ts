@@ -26,7 +26,7 @@ export interface TeamMember {
  * Schedule expression (cron or simple)
  */
 export interface ScheduleExpression {
-  type: 'daily' | 'weekly' | 'cron';
+  type: "daily" | "weekly" | "cron";
   value: string; // ISO time or cron expression
   timezone?: string;
 }

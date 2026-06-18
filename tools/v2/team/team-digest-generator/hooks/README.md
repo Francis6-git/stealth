@@ -20,24 +20,28 @@ React hooks for the Team Digest Generator tool.
 ## Hooks to Implement
 
 ### `useDigestConfig`
+
 - Manage digest configuration state (recipients, filters, schedule)
 - Persist to local storage
 - Validate configuration changes
 - Export/import configuration
 
 ### `useDigestPreview`
+
 - Generate digest preview
 - Handle loading/error states
 - Cache preview results
 - Update preview on config changes
 
 ### `useTeamValidation`
+
 - Validate team member input
 - Check for duplicates
 - Handle invalid entries
 - Report validation errors
 
 ### `useScheduleValidation`
+
 - Validate cron/schedule expressions
 - Calculate next digest time
 - Handle timezone awareness

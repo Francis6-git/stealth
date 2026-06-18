@@ -14,30 +14,35 @@ Business logic and data processing for the Team Digest Generator.
 ## Services to Implement
 
 ### `digestAggregation.ts`
+
 - Collect emails for digest period
 - Sort and organize by sender/thread
 - Apply user-configured filters
 - Generate summary data
 
 ### `emailFiltering.ts`
+
 - Apply digest-specific filters
 - Handle excluded senders/categories
 - Date range filtering
 - Priority-based selection
 
 ### `teamResolution.ts`
+
 - Resolve team member identities
 - Map email addresses to team members
 - Handle permission checking (future integration)
 - Validate team membership
 
 ### `contentSanitization.ts`
+
 - Remove sensitive data (passwords, tokens)
 - Sanitize HTML content
 - Strip unnecessary formatting
 - Normalize encoding
 
 ### `scheduleManagement.ts`
+
 - Parse cron or schedule expressions
 - Calculate next digest time
 - Handle timezone awareness

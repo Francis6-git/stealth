@@ -13,6 +13,7 @@ The Team Digest Generator is a self-contained V2 tool that creates daily team su
 ## Module Boundaries
 
 ### `components/`
+
 - **Ownership:** UI components for the digest generator tool
 - **Responsibilities:**
   - Render digest configuration UI
@@ -26,6 +27,7 @@ The Team Digest Generator is a self-contained V2 tool that creates daily team su
   - No authentication logic
 
 ### `services/`
+
 - **Ownership:** Business logic and data processing
 - **Responsibilities:**
   - Digest data aggregation
@@ -40,6 +42,7 @@ The Team Digest Generator is a self-contained V2 tool that creates daily team su
   - Must optimize for large datasets
 
 ### `hooks/`
+
 - **Ownership:** React hooks for state and side effects
 - **Responsibilities:**
   - Local state management for digest configuration
@@ -51,6 +54,7 @@ The Team Digest Generator is a self-contained V2 tool that creates daily team su
   - No global store modifications
 
 ### `tests/`
+
 - **Ownership:** Unit and integration tests
 - **Responsibilities:**
   - Service logic testing
@@ -62,6 +66,7 @@ The Team Digest Generator is a self-contained V2 tool that creates daily team su
   - No access to production database
 
 ### `docs/`
+
 - **Ownership:** Architecture, API, and usage documentation
 - **Responsibilities:**
   - API reference for services
@@ -75,6 +80,7 @@ The Team Digest Generator is a self-contained V2 tool that creates daily team su
 ## Data Ownership
 
 ### What This Tool Owns
+
 - Digest configuration per team
 - Digest generation schedule
 - Email selection criteria for digests
@@ -82,6 +88,7 @@ The Team Digest Generator is a self-contained V2 tool that creates daily team su
 - Digest preview state
 
 ### What This Tool Does NOT Own
+
 - User authentication and authorization
 - Mail rendering engine
 - Inbox data storage
@@ -91,6 +98,7 @@ The Team Digest Generator is a self-contained V2 tool that creates daily team su
 - Main app routing
 
 ### Data Flow
+
 ```
 Team Member Input → Service Validation → Digest Configuration
                 ↓
@@ -104,12 +112,14 @@ Team Member Input → Service Validation → Digest Configuration
 ## Integration Constraints
 
 ### ✅ **Permitted Internal Dependencies**
+
 - Import from other parts of `tools/v2/team/team-digest-generator/`
 - Use public design system components
 - Use standard Stellar SDK types (if needed in types only)
 - Use React and common utilities
 
 ### ❌ **Prohibited Dependencies**
+
 - Main app routing (`src/router.tsx`, `src/routes/`)
 - Inbox architecture (`src/features/inbox/`)
 - Wallet core (`src/features/wallet/`)
@@ -119,18 +129,20 @@ Team Member Input → Service Validation → Digest Configuration
 - Design system internals
 
 ### Future Integration (Out of Scope for This Issue)
+
 - Wiring digest previews into main inbox
 - Adding digest triggers to mail events
 - Integration with user settings dashboard
 - Wallet-based digest scheduling
 
-*If future integration is needed, create a new issue instead of modifying this architecture.*
+_If future integration is needed, create a new issue instead of modifying this architecture._
 
 ---
 
 ## Contributor Guidelines
 
 ### What Contributors CAN Do
+
 - ✅ Add new services for digest logic
 - ✅ Create new components within this tool
 - ✅ Add tests and documentation
@@ -139,6 +151,7 @@ Team Member Input → Service Validation → Digest Configuration
 - ✅ Add local fixtures and mock data
 
 ### What Contributors MUST NOT Do
+
 - ❌ Modify main app shell or routing
 - ❌ Modify inbox architecture
 - ❌ Modify wallet core
@@ -149,6 +162,7 @@ Team Member Input → Service Validation → Digest Configuration
 - ❌ Add dependencies on main app features outside this contract
 
 ### Folder Structure Rules
+
 - All work must stay inside `tools/v2/team/team-digest-generator/`
 - Do not create files outside this boundary
 - Do not create new folders in `tools/v2/` without approval
@@ -158,6 +172,7 @@ Team Member Input → Service Validation → Digest Configuration
 ## Development Workflow
 
 ### Adding a New Feature
+
 1. Scope feature within this tool's boundaries
 2. Add to appropriate module (components, services, or hooks)
 3. Add tests in `tests/`
@@ -165,12 +180,14 @@ Team Member Input → Service Validation → Digest Configuration
 5. Ensure no modifications outside the tool folder
 
 ### Testing
+
 - Unit tests for all services
 - Component rendering tests
 - Input validation tests
 - Performance benchmarks for large datasets (Issue 2)
 
 ### Code Review Checklist
+
 - [ ] Changes only in `tools/v2/team/team-digest-generator/`
 - [ ] No imports from prohibited dependencies
 - [ ] New tests added
@@ -181,7 +198,7 @@ Team Member Input → Service Validation → Digest Configuration
 
 ## Security Assumptions
 
-*(Detailed in Issue #687 - Security and performance hardening)*
+_(Detailed in Issue #687 - Security and performance hardening)_
 
 - Input from team members must be validated
 - Email content must be sanitized before display
@@ -192,7 +209,7 @@ Team Member Input → Service Validation → Digest Configuration
 
 ## Performance Assumptions
 
-*(Detailed in Issue #687 - Security and performance hardening)*
+_(Detailed in Issue #687 - Security and performance hardening)_
 
 - Digests should handle 1000+ emails per team per day
 - Preview generation should complete in < 2 seconds
@@ -237,6 +254,7 @@ tools/v2/team/team-digest-generator/
 ## Approval & Reviewability
 
 This tool is reviewable as a self-contained mini-product. Code reviews should verify:
+
 1. All changes are within the `tools/v2/team/team-digest-generator/` boundary
 2. No modifications to protected app systems
 3. Architecture contract is respected
