@@ -93,7 +93,9 @@ export type PresetId =
   | "relay-verification"
   | "proof-pending"
   | "receipt-settlement"
-  | "paid-sender-request";
+  | "paid-sender-request"
+  | "conference-pass"
+  | "encrypted-payload";
 
 export interface PresetAccount {
   name: string;
