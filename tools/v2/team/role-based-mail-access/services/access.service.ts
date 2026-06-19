@@ -17,7 +17,7 @@ const DEFAULT_POLICY: AccessPolicy = {
 };
 
 export function createAccessService(initialPolicy: AccessPolicy = DEFAULT_POLICY) {
-  let policy = JSON.parse(JSON.stringify(initialPolicy)) as AccessPolicy;
+  const policy = JSON.parse(JSON.stringify(initialPolicy)) as AccessPolicy;
   let logs: AccessCheckLog[] = [];
   let logCounter = 0;
 
@@ -81,21 +81,22 @@ export function createAccessService(initialPolicy: AccessPolicy = DEFAULT_POLICY
       logs = [newLog, ...logs];
 
       return { isAllowed };
-    } catch (err: any) {
+    } catch (err: unknown) {
+      const error = err as { message?: string; field?: string };
       logCounter++;
       const newLog: AccessCheckLog = {
         id: `log-${String(logCounter).padStart(3, "0")}`,
         request: { ...req },
         isAllowed: false,
-        error: err.message,
+        error: error.message ?? "Unknown error",
         timestamp: new Date().toISOString(),
       };
       logs = [newLog, ...logs];
 
       return {
         isAllowed: false,
-        error: err.message,
-        field: err.field,
+        error: error.message ?? "Unknown error",
+        field: error.field,
       };
     }
   }
@@ -116,17 +117,19 @@ export function createAccessService(initialPolicy: AccessPolicy = DEFAULT_POLICY
     try {
       const mockTeam = Array(teamSize).fill({});
       guardTeamSize(mockTeam);
-    } catch (err: any) {
+    } catch (err: unknown) {
+      const error = err as Error;
       result.teamSizeValid = false;
-      result.teamSizeError = err.message;
+      result.teamSizeError = error.message;
     }
 
     try {
       const mockAttachments = Array(attachmentCount).fill({});
       guardAttachmentCount(mockAttachments);
-    } catch (err: any) {
+    } catch (err: unknown) {
+      const error = err as Error;
       result.attachmentCountValid = false;
-      result.attachmentCountError = err.message;
+      result.attachmentCountError = error.message;
     }
 
     return result;

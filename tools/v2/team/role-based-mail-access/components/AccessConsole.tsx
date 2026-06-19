@@ -36,7 +36,13 @@ export function AccessConsole() {
   const limitChecks = checkTeamAndAttachmentLimits(teamSizeInput, attachmentsInput);
 
   // Quick Preset Handlers
-  const handleSelectPreset = async (preset: any) => {
+  const handleSelectPreset = async (preset: {
+    id: string;
+    requesterEmail: string;
+    role: string;
+    accessLevel: string;
+    threadId: string;
+  }) => {
     setActivePresetId(preset.id);
     const req: VerifyAccessRequest = {
       requesterEmail: preset.requesterEmail,
@@ -63,10 +69,10 @@ export function AccessConsole() {
     for (const h of hostiles) {
       // Create a request object where the hostile value is injected
       const req: VerifyAccessRequest = {
-        requesterEmail: h.field === "email" ? (h.value as any) : "user@example.test",
-        threadId: h.field === "threadId" ? (h.value as any) : "thread-001",
-        role: h.field === "role" ? (h.value as any) : "agent",
-        accessLevel: h.field === "accessLevel" ? (h.value as any) : "read",
+        requesterEmail: h.field === "email" ? (h.value as unknown as string) : "user@example.test",
+        threadId: h.field === "threadId" ? (h.value as unknown as string) : "thread-001",
+        role: h.field === "role" ? (h.value as unknown as string) : "agent",
+        accessLevel: h.field === "accessLevel" ? (h.value as unknown as string) : "read",
       };
 
       const res = checkAccessRequest(req, false);

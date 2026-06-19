@@ -9,7 +9,7 @@ interface AccessVerifierProps {
     message?: string;
     field?: string;
   };
-  onVerify: (req: VerifyAccessRequest, simulateDelay: boolean) => Promise<any>;
+  onVerify: (req: VerifyAccessRequest, simulateDelay: boolean) => Promise<unknown>;
 }
 
 export function AccessVerifier({ isVerifying, verificationResult, onVerify }: AccessVerifierProps) {
